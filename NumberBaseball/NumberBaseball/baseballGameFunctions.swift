@@ -54,20 +54,23 @@ func printInvalidInputMessage() {
     print("중복 숫자는 허용하지 않습니다.")
 }
 
+func getUserInput() -> [String] {
+    print("입력 : ", terminator: "")
+    guard let playerInput = readLine() else { return [""]}
+    
+    return convertStringToArray(from: playerInput)
+}
 
 func playGame(leftRound: Int) {
-    print("입력 : ", terminator: "")
-    guard let playerInput = readLine() else { return }
+    let userInput: [String] = getUserInput()
     
-    let inputNumbers = convertStringToArray(from: playerInput)
-    
-    guard isValidInput(inputNumbers) == true else {
+    guard isValidInput(userInput) == true else {
         printInvalidInputMessage()
         playGame(leftRound: leftRound)
         return
     }
     
-    let tryNumbers = convertToIntArray(from: inputNumbers)
+    let tryNumbers = convertToIntArray(from: userInput)
     let (strikeCount, ballCount) = countStrikeAndBall(in: tryNumbers, from: answerNumbers)
     
     printRoundResult(comparingWith: tryNumbers, score: (strikeCount, ballCount), leftOpportunity: leftRound)
@@ -86,7 +89,7 @@ func playGame(leftRound: Int) {
 func checkWinnerSeeing(strikeCount: Int, leftRound: Int) {
     if strikeCount == totalAnswerNumbers {
         isFinished = true
-        winner = "플레이어"
+        winner = "사용자"
     } else if leftRound == 0{
         isFinished = true
         winner = "컴퓨터"
@@ -125,6 +128,6 @@ func countStrikeAndBall(in tryNumbers: [Int], from answerNumbers: [Int]) -> (str
 
 
 func printRoundResult(comparingWith numbers: [Int], score: (strike: Int, ball: Int), leftOpportunity: Int) {
-    print("\n\(score.strike) 스트라이크, \(score.ball) 볼")
+    print("\(score.strike) 스트라이크, \(score.ball) 볼")
     print("남은 기회: \(leftOpportunity)")
 }
