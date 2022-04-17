@@ -7,23 +7,82 @@
 
 import Foundation
 
-func playGame(opportunityCount: Int) {
-    let tryNumbers = selectRandomNumbers(howMany: 3)
-    let roundScore = countStrikeAndBall(in: tryNumbers, from: answerNumbers)
+//func hasWinnerdecided() {
+//
+//}
+//
+//func decideWinner(strike: Int, LeftRound: Int) {
+//    if strike == totalAnswerNumbers {
+//        return
+//    } else if LeftRound == 0 {
+//        return
+//    }
+//}
+
+
+func printMenu() {
+    print("1. 게임시작")
+    print("2. 게임종료")
+    print("원하는 기능을 선택해주세요 : ", terminator: "")
+}
+
+func getUserChoiceOnMenu() -> String {
+    guard let userChoice = readLine() else { return "" }
+    return userChoice
+}
+
+func startGame(opportunityCount: Int) {
+    printMenu()
     
-    printRoundResult(comparingWith: tryNumbers, score: roundScore, leftOpportunity: opportunityCount)
+    switch getUserChoiceOnMenu() {
+    case "1":
+        playGame(leftRound: opportunityCount - 1)
+        startGame(opportunityCount: opportunityCount)
+    case "2":
+        return
+    default:
+        print("입력이 잘못되었습니다.")
+        startGame(opportunityCount: opportunityCount)
+    }
     
-    if roundScore.strike == totalAnswerNumbers {
+    return
+}
+
+func printInvalidInputMessage() {
+    print("입력이 잘못되었습니다.")
+    print("숫자 3개를 띄어쓰기로 구분하여 입력해주세요")
+    print("중복 숫자는 허용하지 않습니다.")
+}
+
+
+func playGame(leftRound: Int) {
+    print("입력 : ", terminator: "")
+    guard let playerInput = readLine() else { return }
+    
+    let inputNumbers = convertStringToArray(from: playerInput)
+    
+    guard isValidInput(inputNumbers) == true else {
+        printInvalidInputMessage()
+        playGame(leftRound: leftRound)
+        return
+    }
+    
+    let tryNumbers = convertToIntArray(from: inputNumbers)
+    let (strikeCount, ballCount) = countStrikeAndBall(in: tryNumbers, from: answerNumbers)
+    
+    printRoundResult(comparingWith: tryNumbers, score: (strikeCount, ballCount), leftOpportunity: leftRound)
+    
+    if strikeCount == totalAnswerNumbers {
         print("플레이어 승리...!")
         return
     }
     
-    if opportunityCount == 0 {
+    if leftRound == 0 {
         print("컴퓨터 승리...!")
         return
     }
     
-    playGame(opportunityCount: opportunityCount - 1)
+    playGame(leftRound: leftRound - 1)
 }
 
 
@@ -53,6 +112,7 @@ func countStrikeAndBall(in tryNumbers: [Int], from answerNumbers: [Int]) -> (str
         guard answerNumbers.contains(tryNumbers[index]) else { continue }
             ballCount += 1
     }
+    
     return (strikeCount, ballCount)
 }
 
