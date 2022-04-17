@@ -71,20 +71,27 @@ func playGame(leftRound: Int) {
     let (strikeCount, ballCount) = countStrikeAndBall(in: tryNumbers, from: answerNumbers)
     
     printRoundResult(comparingWith: tryNumbers, score: (strikeCount, ballCount), leftOpportunity: leftRound)
-    
-    if strikeCount == totalAnswerNumbers {
-        print("플레이어 승리...!")
+    checkWinnerSeeing(strikeCount: strikeCount, leftRound: leftRound)
+
+    if isFinished {
+        print("\(winner) 승리...!")
+        isFinished = false
         return
+    } else {
+        playGame(leftRound: leftRound - 1)
     }
-    
-    if leftRound == 0 {
-        print("컴퓨터 승리...!")
-        return
-    }
-    
-    playGame(leftRound: leftRound - 1)
 }
 
+
+func checkWinnerSeeing(strikeCount: Int, leftRound: Int) {
+    if strikeCount == totalAnswerNumbers {
+        isFinished = true
+        winner = "플레이어"
+    } else if leftRound == 0{
+        isFinished = true
+        winner = "컴퓨터"
+    }
+}
 
 func selectRandomNumbers(howMany maximum: Int) -> [Int] {
     var randomNumbers: [Int] = []
@@ -118,11 +125,6 @@ func countStrikeAndBall(in tryNumbers: [Int], from answerNumbers: [Int]) -> (str
 
 
 func printRoundResult(comparingWith numbers: [Int], score: (strike: Int, ball: Int), leftOpportunity: Int) {
-    print("임의의 수 : ", terminator: "")
-    for number in numbers {
-        print(number, terminator: " ")
-    }
-
     print("\n\(score.strike) 스트라이크, \(score.ball) 볼")
     print("남은 기회: \(leftOpportunity)")
 }
