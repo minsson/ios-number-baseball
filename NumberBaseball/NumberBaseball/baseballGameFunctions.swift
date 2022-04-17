@@ -44,7 +44,6 @@ func startGame(opportunityCount: Int) {
         print("입력이 잘못되었습니다.")
         startGame(opportunityCount: opportunityCount)
     }
-    
     return
 }
 
@@ -56,7 +55,7 @@ func printInvalidInputMessage() {
 
 func getUserInput() -> [String] {
     print("입력 : ", terminator: "")
-    guard let playerInput = readLine() else { return [""]}
+    guard let playerInput = readLine() else { return [""] }
     
     return convertStringToArray(from: playerInput)
 }
@@ -90,7 +89,7 @@ func checkWinnerSeeing(strikeCount: Int, leftRound: Int) {
     if strikeCount == totalAnswerNumbers {
         isFinished = true
         winner = "사용자"
-    } else if leftRound == 0{
+    } else if leftRound == 0 {
         isFinished = true
         winner = "컴퓨터"
     }
